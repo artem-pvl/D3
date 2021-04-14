@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'fpages',
 
-    'simpleapp',
+    'sampleapp',
     'django_filters',
 ]
 
