@@ -2,6 +2,7 @@
 from django.views.generic import ListView, DetailView  # импортируем класс, который говорит нам о том, что в этом
 # представлении мы будем выводить список объектов из БД
 from .models import Product
+from .filters import ProductFilter
 
 
 class ProductsList(ListView):
@@ -10,6 +11,15 @@ class ProductsList(ListView):
     # все инструкции о том, как именно пользователю должны вывестись наши объекты
     context_object_name = 'products'  # это имя списка, в котором будут лежать все объекты, его надо
     # указать, чтобы обратиться к самому списку объектов через html-шаблон
+    ordering = ['-price']
+    paginate_by = 1 # поставим постраничный вывод в один элемент
+
+    def get_context_data(self, **kwargs):  # забираем отфильтрованные объекты переопределяя
+        # метод get_context_data у наследуемого класса (привет полиморфизм, мы скучали!!!)
+        context = super().get_context_data(**kwargs)
+        context['filter'] = ProductFilter(self.request.GET,
+                                          queryset=self.get_queryset())  # вписываем наш фильтр в контекст
+        return context
 
 
 # создаём представление в котором будет детали конкретного отдельного товара
